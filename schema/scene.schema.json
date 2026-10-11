@@ -1,0 +1,4368 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ku2055/frameflow/schema/scene.schema.json",
+  "title": "Frameflow scene",
+  "description": "A Frameflow video. All times are in seconds.",
+  "type": "object",
+  "required": [
+    "children"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "type": {
+      "const": "video"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 2,
+      "multipleOf": 2,
+      "default": 1920
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 2,
+      "multipleOf": 2,
+      "default": 1080
+    },
+    "fps": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 240,
+      "default": 30
+    },
+    "duration": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Seconds. Default: inferred from content + 1s"
+    },
+    "background": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+        },
+        {
+          "$ref": "#/$defs/gradient"
+        }
+      ]
+    },
+    "font": {
+      "type": "string"
+    },
+    "fonts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "{ \"Family\": \"path/to/font.ttf\" }"
+    },
+    "audio": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "src"
+        ],
+        "properties": {
+          "src": {
+            "type": "string"
+          },
+          "start": {
+            "type": "number"
+          },
+          "trim": {
+            "type": "number"
+          },
+          "volume": {
+            "type": "number"
+          },
+          "fadeIn": {
+            "type": "number"
+          },
+          "fadeOut": {
+            "type": "number"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "ease": {
+      "description": "Easing: a name, \"cubic-bezier(x1,y1,x2,y2)\", or { \"spring\": { \"damping\": 12 } }",
+      "oneOf": [
+        {
+          "enum": [
+            "linear",
+            "easeIn",
+            "easeOut",
+            "easeInOut",
+            "easeInCubic",
+            "easeOutCubic",
+            "easeInOutCubic",
+            "easeInQuart",
+            "easeOutQuart",
+            "easeInOutQuart",
+            "easeInSine",
+            "easeOutSine",
+            "easeInOutSine",
+            "easeInExpo",
+            "easeOutExpo",
+            "easeInBack",
+            "easeOutBack",
+            "easeInOutBack",
+            "easeOutElastic",
+            "easeOutBounce",
+            "spring"
+          ]
+        },
+        {
+          "type": "string",
+          "pattern": "^cubic-bezier\\("
+        },
+        {
+          "type": "object",
+          "required": [
+            "spring"
+          ],
+          "properties": {
+            "spring": {
+              "type": "object",
+              "properties": {
+                "mass": {
+                  "type": "number"
+                },
+                "stiffness": {
+                  "type": "number"
+                },
+                "damping": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "gradient": {
+      "type": "object",
+      "required": [
+        "type",
+        "stops"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "linear",
+            "radial"
+          ]
+        },
+        "angle": {
+          "type": "number"
+        },
+        "stops": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+              }
+            ],
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "preset": {
+      "oneOf": [
+        {
+          "enum": [
+            "fade",
+            "fadeUp",
+            "fadeDown",
+            "fadeLeft",
+            "fadeRight",
+            "pop",
+            "zoom",
+            "slideUp",
+            "slideDown",
+            "slideLeft",
+            "slideRight",
+            "typewriter",
+            "wipe",
+            "blur"
+          ]
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "enum": [
+                "fade",
+                "fadeUp",
+                "fadeDown",
+                "fadeLeft",
+                "fadeRight",
+                "pop",
+                "zoom",
+                "slideUp",
+                "slideDown",
+                "slideLeft",
+                "slideRight",
+                "typewriter",
+                "wipe",
+                "blur"
+              ]
+            },
+            "dur": {
+              "type": "number"
+            },
+            "ease": {
+              "$ref": "#/$defs/ease"
+            },
+            "distance": {
+              "type": "number"
+            },
+            "delay": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "node": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/text"
+        },
+        {
+          "$ref": "#/$defs/rect"
+        },
+        {
+          "$ref": "#/$defs/circle"
+        },
+        {
+          "$ref": "#/$defs/line"
+        },
+        {
+          "$ref": "#/$defs/path"
+        },
+        {
+          "$ref": "#/$defs/image"
+        },
+        {
+          "$ref": "#/$defs/group"
+        }
+      ]
+    },
+    "text": {
+      "type": "object",
+      "required": [
+        "type",
+        "text"
+      ],
+      "properties": {
+        "type": {
+          "const": "text"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds after the parent starts"
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Seconds. Default: until the parent ends"
+        },
+        "x": {
+          "description": "Horizontal position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "y": {
+          "description": "Vertical position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "anchor": {
+          "enum": [
+            "center",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "topLeft",
+            "topRight",
+            "bottomLeft",
+            "bottomRight"
+          ]
+        },
+        "opacity": {
+          "description": "Opacity 0..1. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scale": {
+          "description": "Uniform scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleX": {
+          "description": "Horizontal scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleY": {
+          "description": "Vertical scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Rotation in degrees. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "blur": {
+          "description": "Blur radius in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            "blur": {
+              "type": "number"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "enter": {
+          "$ref": "#/$defs/preset"
+        },
+        "exit": {
+          "$ref": "#/$defs/preset"
+        },
+        "text": {
+          "type": "string"
+        },
+        "size": {
+          "description": "Font size in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "color": {
+          "oneOf": [
+            {
+              "description": "Text/line color. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+              "oneOf": [
+                {
+                  "type": "string",
+                  "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "from",
+                    "to"
+                  ],
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "at": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "dur": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "ease": {
+                      "$ref": "#/$defs/ease"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "minProperties": 1,
+                  "propertyNames": {
+                    "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+                  },
+                  "additionalProperties": true
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/gradient"
+            }
+          ]
+        },
+        "font": {
+          "type": "string"
+        },
+        "weight": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "italic": {
+          "type": "boolean"
+        },
+        "align": {
+          "enum": [
+            "left",
+            "center",
+            "right"
+          ]
+        },
+        "maxWidth": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "pattern": "^-?[0-9.]+%$"
+            }
+          ]
+        },
+        "lineHeight": {
+          "type": "number"
+        },
+        "letterSpacing": {
+          "type": "number"
+        },
+        "stroke": {
+          "type": "string",
+          "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+        },
+        "strokeWidth": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "rect": {
+      "type": "object",
+      "required": [
+        "type",
+        "w",
+        "h"
+      ],
+      "properties": {
+        "type": {
+          "const": "rect"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds after the parent starts"
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Seconds. Default: until the parent ends"
+        },
+        "x": {
+          "description": "Horizontal position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "y": {
+          "description": "Vertical position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "anchor": {
+          "enum": [
+            "center",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "topLeft",
+            "topRight",
+            "bottomLeft",
+            "bottomRight"
+          ]
+        },
+        "opacity": {
+          "description": "Opacity 0..1. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scale": {
+          "description": "Uniform scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleX": {
+          "description": "Horizontal scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleY": {
+          "description": "Vertical scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Rotation in degrees. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "blur": {
+          "description": "Blur radius in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            "blur": {
+              "type": "number"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "enter": {
+          "$ref": "#/$defs/preset"
+        },
+        "exit": {
+          "$ref": "#/$defs/preset"
+        },
+        "w": {
+          "description": "Width. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "h": {
+          "description": "Height. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "fill": {
+          "oneOf": [
+            {
+              "description": "Fill color or gradient. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+              "oneOf": [
+                {
+                  "type": "string",
+                  "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "from",
+                    "to"
+                  ],
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "at": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "dur": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "ease": {
+                      "$ref": "#/$defs/ease"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "minProperties": 1,
+                  "propertyNames": {
+                    "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+                  },
+                  "additionalProperties": true
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/gradient"
+            }
+          ]
+        },
+        "radius": {
+          "description": "Corner radius. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "stroke": {
+          "type": "string",
+          "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+        },
+        "strokeWidth": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "circle": {
+      "type": "object",
+      "required": [
+        "type",
+        "r"
+      ],
+      "properties": {
+        "type": {
+          "const": "circle"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds after the parent starts"
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Seconds. Default: until the parent ends"
+        },
+        "x": {
+          "description": "Horizontal position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "y": {
+          "description": "Vertical position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "anchor": {
+          "enum": [
+            "center",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "topLeft",
+            "topRight",
+            "bottomLeft",
+            "bottomRight"
+          ]
+        },
+        "opacity": {
+          "description": "Opacity 0..1. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scale": {
+          "description": "Uniform scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleX": {
+          "description": "Horizontal scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleY": {
+          "description": "Vertical scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Rotation in degrees. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "blur": {
+          "description": "Blur radius in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            "blur": {
+              "type": "number"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "enter": {
+          "$ref": "#/$defs/preset"
+        },
+        "exit": {
+          "$ref": "#/$defs/preset"
+        },
+        "r": {
+          "description": "Radius. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "fill": {
+          "oneOf": [
+            {
+              "description": "Fill color or gradient. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+              "oneOf": [
+                {
+                  "type": "string",
+                  "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "from",
+                    "to"
+                  ],
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "at": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "dur": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "ease": {
+                      "$ref": "#/$defs/ease"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "minProperties": 1,
+                  "propertyNames": {
+                    "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+                  },
+                  "additionalProperties": true
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/gradient"
+            }
+          ]
+        },
+        "stroke": {
+          "type": "string",
+          "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+        },
+        "strokeWidth": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "line": {
+      "type": "object",
+      "required": [
+        "type",
+        "points"
+      ],
+      "properties": {
+        "type": {
+          "const": "line"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds after the parent starts"
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Seconds. Default: until the parent ends"
+        },
+        "x": {
+          "description": "Horizontal position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "y": {
+          "description": "Vertical position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "anchor": {
+          "enum": [
+            "center",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "topLeft",
+            "topRight",
+            "bottomLeft",
+            "bottomRight"
+          ]
+        },
+        "opacity": {
+          "description": "Opacity 0..1. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scale": {
+          "description": "Uniform scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleX": {
+          "description": "Horizontal scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleY": {
+          "description": "Vertical scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Rotation in degrees. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "blur": {
+          "description": "Blur radius in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            "blur": {
+              "type": "number"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "enter": {
+          "$ref": "#/$defs/preset"
+        },
+        "exit": {
+          "$ref": "#/$defs/preset"
+        },
+        "points": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        },
+        "color": {
+          "description": "Line color. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "string",
+                  "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                },
+                "to": {
+                  "type": "string",
+                  "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "width": {
+          "description": "Line width. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "progress": {
+          "description": "0..1 portion of the line drawn. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "cap": {
+          "enum": [
+            "butt",
+            "round",
+            "square"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "path": {
+      "type": "object",
+      "required": [
+        "type",
+        "d"
+      ],
+      "properties": {
+        "type": {
+          "const": "path"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds after the parent starts"
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Seconds. Default: until the parent ends"
+        },
+        "x": {
+          "description": "Horizontal position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "y": {
+          "description": "Vertical position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "anchor": {
+          "enum": [
+            "center",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "topLeft",
+            "topRight",
+            "bottomLeft",
+            "bottomRight"
+          ]
+        },
+        "opacity": {
+          "description": "Opacity 0..1. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scale": {
+          "description": "Uniform scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleX": {
+          "description": "Horizontal scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleY": {
+          "description": "Vertical scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Rotation in degrees. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "blur": {
+          "description": "Blur radius in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            "blur": {
+              "type": "number"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "enter": {
+          "$ref": "#/$defs/preset"
+        },
+        "exit": {
+          "$ref": "#/$defs/preset"
+        },
+        "d": {
+          "type": "string",
+          "description": "SVG path data"
+        },
+        "fill": {
+          "oneOf": [
+            {
+              "description": "Fill color or gradient. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+              "oneOf": [
+                {
+                  "type": "string",
+                  "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "from",
+                    "to"
+                  ],
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+                    },
+                    "at": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "dur": {
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "ease": {
+                      "$ref": "#/$defs/ease"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "minProperties": 1,
+                  "propertyNames": {
+                    "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+                  },
+                  "additionalProperties": true
+                }
+              ]
+            },
+            {
+              "$ref": "#/$defs/gradient"
+            }
+          ]
+        },
+        "stroke": {
+          "type": "string",
+          "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+        },
+        "strokeWidth": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "image": {
+      "type": "object",
+      "required": [
+        "type",
+        "src"
+      ],
+      "properties": {
+        "type": {
+          "const": "image"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds after the parent starts"
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Seconds. Default: until the parent ends"
+        },
+        "x": {
+          "description": "Horizontal position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "y": {
+          "description": "Vertical position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "anchor": {
+          "enum": [
+            "center",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "topLeft",
+            "topRight",
+            "bottomLeft",
+            "bottomRight"
+          ]
+        },
+        "opacity": {
+          "description": "Opacity 0..1. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scale": {
+          "description": "Uniform scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleX": {
+          "description": "Horizontal scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleY": {
+          "description": "Vertical scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Rotation in degrees. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "blur": {
+          "description": "Blur radius in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            "blur": {
+              "type": "number"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "enter": {
+          "$ref": "#/$defs/preset"
+        },
+        "exit": {
+          "$ref": "#/$defs/preset"
+        },
+        "src": {
+          "type": "string"
+        },
+        "w": {
+          "description": "Width. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "h": {
+          "description": "Height. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "fit": {
+          "enum": [
+            "cover",
+            "contain",
+            "fill"
+          ]
+        },
+        "radius": {
+          "description": "Corner radius. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "group": {
+      "type": "object",
+      "required": [
+        "type",
+        "children"
+      ],
+      "properties": {
+        "type": {
+          "const": "group"
+        },
+        "id": {
+          "type": "string"
+        },
+        "start": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Seconds after the parent starts"
+        },
+        "duration": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "description": "Seconds. Default: until the parent ends"
+        },
+        "x": {
+          "description": "Horizontal position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "y": {
+          "description": "Vertical position (px or \"50%\"). Default: frame center. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^-?[0-9.]+%$"
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "to": {
+                  "oneOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^-?[0-9.]+%$"
+                    }
+                  ]
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "anchor": {
+          "enum": [
+            "center",
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "topLeft",
+            "topRight",
+            "bottomLeft",
+            "bottomRight"
+          ]
+        },
+        "opacity": {
+          "description": "Opacity 0..1. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scale": {
+          "description": "Uniform scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleX": {
+          "description": "Horizontal scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "scaleY": {
+          "description": "Vertical scale. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "rotate": {
+          "description": "Rotation in degrees. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "blur": {
+          "description": "Blur radius in px. Constant, tween { from, to, at, dur, ease } or keyframes { \"0\": a, \"1.5\": b, \"ease\": \"...\" }. Times in seconds relative to the node start.",
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "object",
+              "required": [
+                "from",
+                "to"
+              ],
+              "properties": {
+                "from": {
+                  "type": "number"
+                },
+                "to": {
+                  "type": "number"
+                },
+                "at": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "dur": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "ease": {
+                  "$ref": "#/$defs/ease"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "minProperties": 1,
+              "propertyNames": {
+                "pattern": "^(ease|[0-9]+(\\.[0-9]+)?)$"
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "shadow": {
+          "type": "object",
+          "properties": {
+            "color": {
+              "type": "string",
+              "description": "Hex (#38bdf8), rgb()/rgba(), or a basic color name"
+            },
+            "blur": {
+              "type": "number"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            }
+          },
+          "additionalProperties": false
+        },
+        "enter": {
+          "$ref": "#/$defs/preset"
+        },
+        "exit": {
+          "$ref": "#/$defs/preset"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

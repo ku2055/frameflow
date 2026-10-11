@@ -1,0 +1,6 @@
+node_modules/
+dist/
+out/
+*.mp4
+!docs/media/*.mp4
+.frameflow-cache/

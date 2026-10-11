@@ -1,0 +1,55 @@
+{
+  "$schema": "../schema/scene.schema.json",
+  "type": "video",
+  "width": 1280,
+  "height": 720,
+  "fps": 30,
+  "duration": 12,
+  "font": "DejaVu Sans",
+  "background": { "type": "linear", "angle": 120, "stops": [[0, "#0f0a1f"], [1, "#2a0f3d"]] },
+  "children": [
+    { "type": "rect", "x": 1150, "y": 110, "w": 220, "h": 220, "stroke": "#f472b6", "strokeWidth": 6, "opacity": 0.35,
+      "rotate": { "from": 0, "to": 360, "dur": 6, "ease": "linear", "repeat": true } },
+    { "type": "rect", "x": 1150, "y": 110, "w": 140, "h": 140, "stroke": "#22d3ee", "strokeWidth": 4, "opacity": 0.35,
+      "rotate": { "from": 360, "to": 0, "dur": 4, "ease": "linear", "repeat": true } },
+    { "type": "circle", "x": 160, "y": 600, "r": { "from": 60, "to": 110, "dur": 3, "ease": "easeInOutSine", "repeat": true, "yoyo": true }, "fill": "#7c3aed", "opacity": 0.25 },
+
+    { "type": "group", "start": 0, "duration": 3.2, "exit": { "type": "fade", "dur": 0.4 }, "children": [
+      { "type": "text", "text": "VIDEO", "x": 640, "y": 200, "size": 150, "weight": "bold", "color": "#f8fafc",
+        "enter": { "type": "slideRight", "dur": 0.7, "distance": 700 } },
+      { "type": "text", "text": "AS", "x": 640, "y": 345, "size": 90, "weight": "bold", "color": "#f472b6",
+        "start": 0.5, "enter": "pop" },
+      { "type": "text", "text": "CODE", "x": 640, "y": 500, "size": 150, "weight": "bold", "color": "#22d3ee",
+        "font": "DejaVu Sans Mono", "start": 1.0, "enter": { "type": "typewriter", "dur": 0.6 } },
+      { "type": "rect", "x": 640, "y": 600, "w": { "from": 0, "to": 600, "at": 1.4, "dur": 0.8, "ease": "easeOutQuart" }, "h": 8, "radius": 4, "fill": "#facc15" }
+    ]},
+
+    { "type": "group", "start": 3.2, "duration": 3.2, "exit": { "type": "fade", "dur": 0.4 }, "children": [
+      { "type": "text", "text": "Write it.", "x": 640, "y": 190, "size": 120, "weight": "bold", "color": "#f8fafc",
+        "enter": { "type": "typewriter", "dur": 0.5 } },
+      { "type": "text", "text": "Render it.", "x": 640, "y": 360, "size": 120, "weight": "bold", "color": "#a78bfa",
+        "start": 0.6, "enter": { "type": "slideLeft", "dur": 0.6, "distance": 800 } },
+      { "type": "text", "text": "Ship it.", "x": 640, "y": 530, "size": 120, "weight": "bold", "color": "#facc15",
+        "start": 1.2, "enter": { "type": "pop", "ease": { "spring": { "damping": 8 } } } },
+      { "type": "circle", "x": 1030, "y": 530, "r": 28, "fill": "#22c55e", "start": 1.6, "enter": "pop" },
+      { "type": "path", "d": "M-12 0 L-3 10 L13 -9", "x": 1030, "y": 530, "stroke": "#0f0a1f", "strokeWidth": 7, "start": 1.8, "enter": { "type": "fade", "dur": 0.3 } }
+    ]},
+
+    { "type": "group", "start": 6.4, "duration": 3.2, "exit": { "type": "blur", "dur": 0.4 }, "children": [
+      { "type": "text", "text": "Agents can write\nthis file.", "x": 640, "y": 300, "size": 110, "weight": "bold", "lineHeight": 1.15,
+        "color": { "type": "linear", "angle": 0, "stops": [[0, "#f472b6"], [1, "#22d3ee"]] },
+        "enter": { "type": "blur", "dur": 0.8, "distance": 30 } },
+      { "type": "text", "text": "{ \"type\": \"text\", \"enter\": \"pop\" }", "x": 640, "y": 540, "size": 34, "font": "DejaVu Sans Mono", "color": "#c4b5fd",
+        "start": 1.0, "enter": { "type": "typewriter", "dur": 1.2 } }
+    ]},
+
+    { "type": "group", "start": 9.6, "duration": 2.4, "children": [
+      { "type": "text", "text": "frameflow", "x": 640, "y": 320, "size": 160, "weight": "bold", "color": "#f8fafc",
+        "shadow": { "color": "#a855f7", "blur": 40 }, "enter": { "type": "wipe", "dur": 0.7, "ease": "easeOutQuart" } },
+      { "type": "line", "points": [[340, 430], [940, 430]], "color": "#f472b6", "width": 6,
+        "progress": { "from": 0, "to": 1, "at": 0.5, "dur": 0.8, "ease": "easeOutCubic" } },
+      { "type": "text", "text": "video as code", "x": 640, "y": 500, "size": 40, "color": "#c4b5fd", "letterSpacing": 8,
+        "start": 0.8, "enter": { "type": "fadeUp", "dur": 0.5 } }
+    ]}
+  ]
+}

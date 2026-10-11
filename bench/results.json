@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-11T12:47:57.953Z",
+  "machine": {
+    "cpus": 4,
+    "cpuModel": "AMD EPYC 7571",
+    "memGB": 15,
+    "node": "v22.23.3"
+  },
+  "video": "1280x720, 30fps, 180 frames (6s), H.264 CRF 18 preset medium",
+  "runs": 3,
+  "contenders": {
+    "remotion": {
+      "seconds": [
+        13.15,
+        13.25,
+        13.1
+      ],
+      "medianSeconds": 13.15,
+      "medianRssMB": 519,
+      "outputBytes": 83236,
+      "installSize": "688 MB",
+      "packages": 254,
+      "sceneLoc": 125
+    },
+    "frameflow": {
+      "seconds": [
+        2.65,
+        2.56,
+        2.74
+      ],
+      "medianSeconds": 2.65,
+      "medianRssMB": 535,
+      "outputBytes": 120535,
+      "installSize": "186 MB",
+      "packages": 25,
+      "sceneLoc": 16
+    }
+  },
+  "psnrAverageDb": 42.334703,
+  "variants": {
+    "remotion --concurrency=4": {
+      "seconds": [
+        12.11,
+        12.01,
+        12
+      ],
+      "medianSeconds": 12.01
+    },
+    "frameflow --workers=2": {
+      "seconds": [
+        2.35,
+        2.38,
+        2.38
+      ],
+      "medianSeconds": 2.38
+    },
+    "frameflow --workers=1": {
+      "seconds": [
+        2.55,
+        2.52,
+        2.5
+      ],
+      "medianSeconds": 2.52
+    },
+    "remotion --scale=1.5 (1080p)": {
+      "seconds": [
+        17.41,
+        17.24,
+        17.28
+      ],
+      "medianSeconds": 17.28
+    },
+    "frameflow --scale 1.5 (1080p)": {
+      "seconds": [
+        4.84,
+        4.82,
+        4.75
+      ],
+      "medianSeconds": 4.82
+    }
+  }
+}

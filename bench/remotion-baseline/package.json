@@ -1,0 +1,19 @@
+{
+  "name": "remotion-baseline",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "render": "remotion render src/index.ts Promo out/promo.mp4",
+    "still": "remotion still src/index.ts Promo out/frame60.png --frame=60"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.534",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.534"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "typescript": "7.0.2"
+  }
+}
