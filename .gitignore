@@ -4,3 +4,9 @@ out/
 *.mp4
 !docs/media/*.mp4
 .frameflow-cache/
+
+# never commit secrets
+.env
+.env.*
+*.pem
+*.key

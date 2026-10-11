@@ -1,5 +1,7 @@
 # Frameflow
 
+**English** · [简体中文](README.zh-CN.md)
+
 **Video as code, made simple.** Write motion graphics in TypeScript or plain JSON, with every time in **seconds**. Frameflow renders to MP4 **without a browser**, 5× faster than Remotion on [our benchmark](docs/04-benchmark.md), and it's built so coding agents (Claude Code, Codex, Cursor) can write *and check* videos on their own.
 
 ```ts
@@ -18,6 +20,12 @@ frameflow check scene.ts            # validate: exact paths + "did you mean" fix
 frameflow storyboard scene.ts       # one PNG of the whole timeline (great for AI review)
 frameflow render scene.ts out.mp4   # parallel render → MP4 / WebM / MOV
 ```
+
+### Render race: the same video in Remotion and Frameflow
+
+[![Remotion vs Frameflow render race. Click to play the video (280 KB)](docs/media/comparison.png)](docs/media/comparison.mp4)
+
+Both tools render the same 6-second clip on the same 4-vCPU machine. Each panel shows that tool's real output, appearing when its render finished in real time: **Frameflow after 2.65 s, Remotion after 13.15 s**. Then both play side by side to show the pixels match (42.3 dB PSNR). [▶ Watch the video](docs/media/comparison.mp4) · [中文版](docs/media/comparison.zh.mp4) · rebuild it with `node scripts/make-comparison.mjs`.
 
 ![Storyboard of examples/product-launch.ts](docs/media/product-launch.storyboard.png)
 
@@ -106,6 +114,7 @@ opacity: ({ t, progress, frame }) => Math.sin(t)     // function (TypeScript onl
 | Example | Shows |
 |---|---|
 | [`hello.ts`](examples/hello.ts) | The benchmark video |
+| [`comparison.ts`](examples/comparison.ts) | The render-race video above, English or Chinese (`--props '{"lang":"zh"}'`), with a bundled CJK font |
 | [`product-launch.ts`](examples/product-launch.ts) | 3-scene promo, crossfading `sequence`, gradients, looping pulse |
 | [`bar-chart.ts`](examples/bar-chart.ts) | Data-driven chart from `props`, spring bars, `counter` labels |
 | [`captions.ts`](examples/captions.ts) | TikTok-style word-highlight captions with `measureText` |
